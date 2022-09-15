@@ -5,12 +5,12 @@ use account::Account;
 use collective::Collective;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::LookupMap;
-use near_sdk::{env, near_bindgen};
+use near_sdk::{env, near_bindgen, AccountId};
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
 pub struct Concord {
-    accounts: LookupMap<String, Account>,
+    accounts: LookupMap<AccountId, Account>,
     collectives: LookupMap<String, Collective>,
 }
 
