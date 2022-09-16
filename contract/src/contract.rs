@@ -2,7 +2,7 @@ use crate::account::{Account, AccountType};
 use crate::collective::{Collective, CollectiveId, CollectiveMetadataHash, CollectiveType};
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::LookupMap;
-use near_sdk::{self, env, near_bindgen, AccountId, Balance};
+use near_sdk::{self, env, near_bindgen, require, AccountId, Balance};
 
 #[near_bindgen]
 #[derive(BorshSerialize, BorshDeserialize)]
@@ -21,6 +21,8 @@ impl Default for Concord {
 impl Concord {
     #[init]
     pub fn new() -> Self {
+        require!(!env::state_exists(), "Error: contract already initialized");
+
         Self {
             accounts: LookupMap::new(b"account".to_vec()),
             collectives: LookupMap::new(b"collective".to_vec()),
