@@ -1,0 +1,28 @@
+* {
+  text-transform: unset !important;
+}
+
+html {
+  font-family: "Manrope", "Raleway", sans-serif;
+}
+
+.v-container.fill-height {
+  height: unset !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.v-toolbar {
+  flex: unset !important;
+  position: relative !important;
+}
+
+.v-toolbar-title {
+  flex: unset !important;
+}
+
+.v-toolbar__content {
+  padding: 10px 0 !important;
+  height: unset !important;
+}
