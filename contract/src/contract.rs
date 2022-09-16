@@ -1,8 +1,8 @@
-use crate::account::Account;
+use crate::account::{Account, AccountType};
 use crate::collective::{Collective, CollectiveId, CollectiveMetadataHash, CollectiveType};
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::LookupMap;
-use near_sdk::{self, env, near_bindgen, AccountId};
+use near_sdk::{self, env, near_bindgen, AccountId, Balance};
 
 #[near_bindgen]
 #[derive(BorshSerialize, BorshDeserialize)]
@@ -31,6 +31,23 @@ impl Concord {
         self.internal_get_collective(collective_id)
     }
 
+    pub fn get_account_collectives(
+        &self,
+        account_id: AccountId,
+        from_index: usize,
+        limit: usize,
+    ) -> Vec<(CollectiveId, Balance)> {
+        self.internal_get_account_collectives(account_id, from_index, limit)
+    }
+
+    pub fn get_account_collective_balance(
+        &self,
+        account_id: AccountId,
+        collective_id: CollectiveId,
+    ) -> Balance {
+        self.internal_get_account_collective_balance(account_id, collective_id)
+    }
+
     pub fn create_collective(
         &mut self,
         token_id: AccountId,
@@ -42,11 +59,12 @@ impl Concord {
 
         self.internal_create_collective(
             token_id,
-            collective_id,
-            collective_creator,
+            collective_id.clone(),
+            collective_creator.clone(),
             collective_type,
             collective_metadata_hash,
-        )
+        );
+        self.internal_save_account_collective(collective_creator, collective_id, 0)
     }
 
     #[private]
@@ -78,5 +96,46 @@ impl Concord {
                 self.collectives.insert(&collective_id, &collective);
             }
         }
+    }
+
+    #[private]
+    fn internal_get_account(&self, account_id: AccountId) -> Account {
+        self.accounts
+            .get(&account_id)
+            .unwrap_or(Account::new(account_id, AccountType::INDIVIDUAL))
+    }
+
+    #[private]
+    fn internal_get_account_collectives(
+        &self,
+        account_id: AccountId,
+        from_index: usize,
+        limit: usize,
+    ) -> Vec<(CollectiveId, Balance)> {
+        let account = self.internal_get_account(account_id);
+        account.get_collectives(from_index, limit)
+    }
+
+    #[private]
+    fn internal_get_account_collective_balance(
+        &self,
+        account_id: AccountId,
+        collective_id: CollectiveId,
+    ) -> Balance {
+        let account = self.internal_get_account(account_id);
+        account.get_collective_balance(collective_id)
+    }
+
+    #[private]
+    fn internal_save_account_collective(
+        &mut self,
+        account_id: AccountId,
+        collective_id: CollectiveId,
+        amount: Balance,
+    ) {
+        let mut account = self.internal_get_account(account_id.clone());
+        account.save_collective(collective_id, amount);
+
+        self.accounts.insert(&account_id, &account);
     }
 }
