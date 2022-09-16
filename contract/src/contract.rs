@@ -31,6 +31,11 @@ impl Concord {
         self.internal_get_collective(collective_id)
     }
 
+    pub fn get_collective_balance(&self, collective_id: CollectiveId) -> Balance {
+        self.internal_get_collective(collective_id)
+            .collective_balance
+    }
+
     pub fn get_account_collectives(
         &self,
         account_id: AccountId,

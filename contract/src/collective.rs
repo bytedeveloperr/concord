@@ -1,4 +1,5 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::collections::UnorderedMap;
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{AccountId, Balance};
 
@@ -23,6 +24,7 @@ pub struct Collective {
     pub collective_type: CollectiveType,
     pub collective_creator: AccountId,
     pub collective_metadata_hash: CollectiveMetadataHash,
+    pub collective_contributors: UnorderedMap<AccountId, Balance>,
 }
 
 impl Collective {
@@ -38,6 +40,7 @@ impl Collective {
             collective_creator,
             collective_metadata_hash,
             collective_balance: 0,
+            collective_contributors: UnorderedMap::new("dd".as_bytes()),
         }
     }
 }
