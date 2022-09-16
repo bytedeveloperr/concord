@@ -66,7 +66,7 @@ impl Concord {
         collective_metadata_hash: CollectiveMetadataHash,
     ) {
         match self.collectives.contains_key(&collective_id) {
-            true => env::panic_str("Error: collective does not exist"),
+            true => env::panic_str("Error: collective id already exist"),
             false => {
                 let collective = Collective::new(
                     token_id,
