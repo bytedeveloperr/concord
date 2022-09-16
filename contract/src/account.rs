@@ -1,17 +1,20 @@
-use near_sdk::{AccountId, Balance};
+use near_sdk::AccountId;
+
+pub enum AccountType {
+    INDIVIDUAL,
+    ORGANIZATION,
+}
 
 pub struct Account {
     pub account_id: AccountId,
-    pub account_type: String,
-    pub account_creator: AccountId,
+    pub account_type: AccountType,
 }
 
 impl Account {
-    pub fn new() {}
-
-    pub fn get_account(&self, _account_id: String) {}
-
-    pub fn get_account_balance(&self, _account_id: String) -> Balance {
-        0
+    pub fn new(&mut self, account_id: AccountId, account_type: AccountType) -> Self {
+        Self {
+            account_id,
+            account_type,
+        }
     }
 }
